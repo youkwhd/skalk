@@ -24,17 +24,17 @@ data TokenType =
 consumeWith :: String -> (String -> Bool) -> (String, String)
 consumeWith "" _ = ("", "")
 consumeWith str fn = 
-                    if fn str then 
-                        let next = consumeWith (tail str) fn in
-                        (head str : fst next, snd next)
-                    else
-                        ("", str)
+    if fn str then 
+        let next = consumeWith (tail str) fn in
+        (head str : fst next, snd next)
+    else
+        ("", str)
         
 readNumber :: String -> (Token, String)
 readNumber str = 
-            let consumed = consumeWith str (\(ch:_) -> isDigit ch || ch == '.') in
-            let result = fst consumed in
-            (Token {literal = result, _type = if result == "" then UNKNOWN else NUMBER}, snd consumed)
+    let consumed = consumeWith str (\(ch:_) -> isDigit ch || ch == '.') in
+    let result = fst consumed in
+    (Token {literal = result, _type = if result == "" then UNKNOWN else NUMBER}, snd consumed)
 
 tokenize :: String -> [Token]
 tokenize "" = []
