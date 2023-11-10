@@ -53,7 +53,12 @@ nextToken (ch:str) = case ch of
     ch -> (Token {literal = ch : "", _type = UNKNOWN}, str)
 
 tokenize :: String -> [Token]
-tokenize "" = []
+tokenize "" = [Token {literal = "!TODO", _type = EOF}]
 tokenize str = 
     let result = nextToken str in
-    fst result : tokenize (snd result)
+    let token = fst result in
+
+    if _type token /= WHITESPACE then
+        fst result : tokenize (snd result)
+    else
+        tokenize (snd result)
