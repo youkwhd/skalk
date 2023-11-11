@@ -40,17 +40,18 @@ readNumber str =
 
 nextToken :: String -> (Token, String)
 nextToken "" = (Token {literal = "", _type = UNKNOWN}, "")
-nextToken (ch:str) = case ch of
-    ' ' -> (Token {literal = " ", _type = WHITESPACE}, str)
-    '\t' -> (Token {literal = "\t", _type = WHITESPACE}, str)
-    '(' -> (Token {literal = "(", _type = LPAREN}, str)
-    ')' -> (Token {literal = ")", _type = RPAREN}, str)
-    '+' -> (Token {literal = "+", _type = PLUS}, str)
-    '-' -> (Token {literal = "-", _type = MINUS}, str)
-    '*' -> (Token {literal = "*", _type = TIMES}, str)
-    '/' -> (Token {literal = "/", _type = DIVIDE}, str)
-    ch | isDigit ch -> readNumber (ch : str)
-    ch -> (Token {literal = ch : "", _type = UNKNOWN}, str)
+nextToken (ch:str) =
+    case ch of
+        ' ' -> (Token {literal = " ", _type = WHITESPACE}, str)
+        '\t' -> (Token {literal = "\t", _type = WHITESPACE}, str)
+        '(' -> (Token {literal = "(", _type = LPAREN}, str)
+        ')' -> (Token {literal = ")", _type = RPAREN}, str)
+        '+' -> (Token {literal = "+", _type = PLUS}, str)
+        '-' -> (Token {literal = "-", _type = MINUS}, str)
+        '*' -> (Token {literal = "*", _type = TIMES}, str)
+        '/' -> (Token {literal = "/", _type = DIVIDE}, str)
+        ch | isDigit ch -> readNumber (ch : str)
+        ch -> (Token {literal = ch : "", _type = UNKNOWN}, str)
 
 tokenize :: String -> [Token]
 tokenize "" = [Token {literal = "!TODO", _type = EOF}]
