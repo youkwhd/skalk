@@ -6,8 +6,11 @@ import Control.Monad (forM)
 
 main :: IO ()
 main = do
-    let prog = "(+ -6.2 2)" 
-    let asm = "section .text\n\
+    let prog = "(+ 6 2)" 
+    let asm = "section .data\n\
+              \    sfmt: db \"%d\", 0x0A, 0x0D, 0x00\n\
+              \\n\
+              \section .text\n\
               \    global main\n\
               \    extern printf\n\
               \\n\
@@ -21,5 +24,9 @@ main = do
               ++
               parse (tokenize prog)
               ++
-              "    call exit\n" 
+              "\n    mov rdi, sfmt\n\
+              \    mov rsi, rax\n\
+              \    mov eax, 0x00\n\
+              \    call printf\n\
+              \    call exit\n" 
     putStr asm

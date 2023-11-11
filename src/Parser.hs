@@ -17,16 +17,21 @@ __parse (tok:tokens) operations =
     case _type tok of
         LPAREN -> 
             let function = head tokens in
-            __parse (tail tokens) (LPAREN : operations)
+            let number = head (tail tokens) in
+            "    mov rax, " ++ literal number ++ "\n" ++ __parse (tail (tail tokens)) (_type function : LPAREN : operations)
         RPAREN ->
             assert (not (null operations))
-            __parse tokens (init operations)
-        MINUS -> __parse tokens (MINUS : operations)
+            __parse tokens (tail (tail operations))
         NUMBER ->
             let op = peek operations in
-            if op == Just MINUS then
-                "    ; negate number -- NOT IMPEMENTED YET\n" ++ __parse (tok : tokens) (tail operations)
-            else
-                "    ; mov number\n" ++ __parse tokens operations
+            case op of
+                -- Just MINUS ->
+                --     "    ; negate number -- NOT IMPEMENTED YET\n" ++ __parse (tok : tokens) (tail operations)
+                Just PLUS ->
+                    "    add rax, " ++ literal tok ++ "\n" ++ __parse tokens operations
+                Just TIMES ->
+                    "    mul rax, " ++ literal tok ++ "\n" ++ __parse tokens operations
+                _ ->
+                    "    ; UNKNOWN OPERATION\n" ++ __parse tokens operations
         EOF -> assert (null operations) ""
         _ -> "    ; UNKOWN TOKEN\n" ++ __parse tokens operations
