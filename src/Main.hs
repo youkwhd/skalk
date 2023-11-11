@@ -8,7 +8,7 @@ main :: IO ()
 main = do
     let prog = "(+ 6 2)" 
     let asm = "section .data\n\
-              \    sfmt: db \"%d\", 0x0A, 0x0D, 0x00\n\
+              \    fmt: db \"%d\", 0x0A, 0x0D, 0x00\n\
               \\n\
               \section .text\n\
               \    global main\n\
@@ -24,7 +24,7 @@ main = do
               ++
               parse (tokenize prog)
               ++
-              "\n    mov rdi, sfmt\n\
+              "\n    mov rdi, fmt\n\
               \    mov rsi, rax\n\
               \    mov eax, 0x00\n\
               \    call printf\n\
