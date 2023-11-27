@@ -4,38 +4,37 @@ import Lexer
 import Control.Exception
 
 parse :: [Token] -> Int
-parse tokens =  __parse tokens [] [] []
+parse tokens = fst (__parse tokens PLUS)
 
 peek :: [a] -> Maybe a
 peek [] = Nothing
 peek (x:xs) = Just x
 
-__parse :: [Token] -> [(TokenType, Int)] -> [TokenType] -> [Int] -> Int
-__parse [] _ _ numbers = head numbers
-__parse (tok:tokens) operations brackets numbers =
+__parse :: [Token] -> TokenType -> (Int, [Token])
+__parse [] _ = (0, [])
+__parse (tok:tokens) op =
     case _type tok of
-        LPAREN ->
-            let op = head tokens in
-            let before = peek operations in
-            case before of
-                Nothing ->
-                    __parse (tail tokens) ((_type op, 0) : operations) (LPAREN : brackets) numbers
-                Just x ->
-                    __parse (tail tokens) ((_type op, 0) : (fst x, snd x + 1) : tail operations) (LPAREN : brackets) numbers
         RPAREN ->
-            -- assert (not (null operations))
-            -- assert (head brackets == LPAREN)
-            let (op, n) = head operations in
-            let num = case op of
-                        PLUS -> foldr (+) 0 (reverse (take n numbers))
-                        MINUS -> foldr (-) (head numbers) (reverse (take (n - 1) (tail numbers)))
-                        TIMES -> foldr (*) 1 (reverse (take n numbers))
-                        -- DIVIDE -> foldr (/) (head numbers) (reverse (take (n - 1) (tail numbers)))
-                        _ -> 0 in
-            __parse tokens (tail operations) (tail brackets) (num : drop n numbers)
+            (0, [])
+        LPAREN ->
+            __parse tokens op
         NUMBER ->
-            let (op, n) = head operations in
-            let _operations = tail operations in
-            __parse tokens ((op, n + 1) : _operations) brackets ((read (literal tok) :: Int) : numbers)
-        EOF -> __parse tokens operations brackets numbers
-        _ -> 0
+            let next_token = head tokens in
+
+            if _type next_token == RPAREN then
+                (read (literal tok) :: Int, tokens)
+            else
+                let r = __parse tokens op in
+                case op of
+                    PLUS ->
+                        ((read (literal tok) :: Int) + fst r, snd r)
+                    MINUS ->
+                        ((read (literal tok) :: Int) - fst r, snd r)
+                    TIMES ->
+                        ((read (literal tok) :: Int) * fst r, snd r)
+        PLUS ->
+            __parse tokens PLUS
+        MINUS ->
+            __parse tokens MINUS
+        TIMES ->
+            __parse tokens TIMES

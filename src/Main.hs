@@ -6,5 +6,5 @@ import Control.Monad (forM)
 
 main :: IO ()
 main = do
-    let prog = "(+ 5 (* 2 4) (+ 1 1))" 
+    let prog = "(* 5 (+ 10 10))"
     print (parse (tokenize prog))
