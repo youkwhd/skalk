@@ -15,10 +15,6 @@ Usage
 
 If you haven't built the program, see the Building section up above.
 
-Running from a file:
-
-    ./skalk prog/addition.sk
-
-Or just execute directly:
+Executing by passing arguments:
 
     ./skalk -e "(+ 35 (* 16 2) 2)"
