@@ -1,6 +1,7 @@
 module Parser where
 
 import Lexer
+import Debug.Trace
 import Data.Either
 import Control.Exception
 
@@ -11,34 +12,34 @@ peek :: [a] -> Maybe a
 peek [] = Nothing
 peek (x:xs) = Just x
 
-__parseEval :: [Token] -> TokenType -> (Int, [Token])
-__parseEval (tok:tokens) op =
+_sum :: [Int] -> Int
+_sum [] = 0
+_sum (x:xs) = x + _sum xs
+
+__parseEval :: [Token] -> TokenType -> Int -> (Int, [Token])
+__parseEval (tok:tokens) op acc =
     case _type tok of
         LPAREN ->
             let r = __parse (tok : tokens) in
-            let _r = __parseEval (snd r) op in
+            trace ("ACC: -> " ++ show acc) $
+            trace ("R: -> " ++ show (fst r)) $
+            trace ("T: -> " ++ show (snd r)) $
             case op of
-                PLUS -> (fst _r + fst r, snd _r)
-                MINUS -> (fst _r - fst r, snd _r)
-                TIMES -> (fst _r * fst r, snd _r)
-        RPAREN ->
-            (0, [])
-        _ ->
+                PLUS -> __parseEval (snd r) op (acc + fst r)
+                MINUS -> __parseEval (snd r) op (acc - fst r)
+                TIMES -> __parseEval (snd r) op (acc * fst r)
+        NUMBER ->
             let next  = head tokens in
-            case _type next of
-                RPAREN ->
-                    let val = read (literal tok) :: Int in
-                    (val, tail tokens)
-                _ ->
-                    let r = __parseEval tokens op in
-                    let val = read (literal tok) :: Int in
-                    case op of
-                        PLUS -> (val + fst r, snd r)
-                        MINUS -> (val - fst r, snd r)
-                        TIMES -> (val * fst r, snd r)
-
+            let val = read (literal tok) :: Int in
+            case op of
+                PLUS -> __parseEval tokens op (acc + val)
+                MINUS -> __parseEval tokens op (acc - val)
+                TIMES -> __parseEval tokens op (acc * val)
+        _ ->
+            (acc, tokens)
 
 __parse :: [Token] -> (Int, [Token])
 __parse (tok:tokens) =
     let op = head tokens in
-    __parseEval (tail tokens) (_type op)
+    let firstNum = (read (literal (head (tail tokens))) :: Int) in
+    __parseEval (tail (tail tokens)) (_type op) firstNum

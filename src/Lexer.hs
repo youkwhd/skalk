@@ -6,7 +6,7 @@ import Data.Char (isDigit)
 data Token = Token {
     literal :: String,
     _type :: TokenType
-}
+} deriving Show
 
 data TokenType
     = UNKNOWN
