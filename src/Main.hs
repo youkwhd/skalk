@@ -14,8 +14,8 @@ main = do
     case args of
         [] ->
             putStrLn progname
-        ["-e", prog] ->
-            print (parse (tokenize prog)) 
+        ["-e", expr] ->
+            print (parse (tokenize expr)) 
         [file] ->
             -- TODO:
             -- read from file
