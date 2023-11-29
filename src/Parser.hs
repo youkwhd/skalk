@@ -8,10 +8,6 @@ import Control.Exception
 parse :: [Token] -> Int
 parse tokens = fst (__parse tokens)
 
-peek :: [a] -> Maybe a
-peek [] = Nothing
-peek (x:xs) = Just x
-
 __parseEval :: [Token] -> TokenType -> Int -> Int -> (Int, [Token])
 __parseEval [] op iteration acc = (acc, [])
 __parseEval (tok:tokens) op iteration acc =
