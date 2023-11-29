@@ -15,8 +15,7 @@ main = do
         [] ->
             putStrLn progname
         ["-e", prog] ->
-            let (result, _tokens) = __parse (tokenize prog) in
-            print result
+            print (parse (tokenize prog)) 
         [file] ->
             -- TODO:
             -- read from file
