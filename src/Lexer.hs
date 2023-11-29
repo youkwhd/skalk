@@ -38,6 +38,9 @@ readNumber str =
     let result = fst consumed in
     (Token {literal = result, _type = if result == "" then UNKNOWN else NUMBER}, snd consumed)
 
+-- TODO:
+--      (-1) and (- 1) is not the same,
+--      scan for negative numbers
 nextToken :: String -> (Token, String)
 nextToken "" = (Token {literal = "", _type = UNKNOWN}, "")
 nextToken (ch:str) =
