@@ -1,4 +1,5 @@
 skalk
+*.exe
 
 *.hi
 *.o
