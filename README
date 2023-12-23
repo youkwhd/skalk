@@ -15,6 +15,6 @@ Usage
 
 If you haven't built the program, see the Building section up above.
 
-Executing by passing arguments:
+Execute by passing arguments:
 
     ./skalk -e "(+ 35 (* 16 2) 2)"
