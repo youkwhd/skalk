@@ -35,3 +35,5 @@ main = do
             -- TODO:
             -- read from file
             printHelp progname
+        _ ->
+            printHelp progname
