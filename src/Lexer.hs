@@ -38,9 +38,6 @@ readNumber str =
     let result = fst consumed in
     (Token {literal = result, _type = if result == "" then UNKNOWN else NUMBER}, snd consumed)
 
--- TODO:
---      (-1) and (- 1) is not the same,
---      scan for negative numbers
 nextToken :: String -> (Token, String)
 nextToken "" = (Token {literal = "", _type = UNKNOWN}, "")
 nextToken (ch:str) =
@@ -50,6 +47,9 @@ nextToken (ch:str) =
         '(' -> (Token {literal = "(", _type = LPAREN}, str)
         ')' -> (Token {literal = ")", _type = RPAREN}, str)
         '+' -> (Token {literal = "+", _type = PLUS}, str)
+        '-' | isDigit (head str)  ->
+            let (token, rest) = readNumber str in
+            (Token {literal = "-" ++ literal token, _type = NUMBER}, rest)
         '-' -> (Token {literal = "-", _type = MINUS}, str)
         '*' -> (Token {literal = "*", _type = TIMES}, str)
         '/' -> (Token {literal = "/", _type = DIVIDE}, str)
