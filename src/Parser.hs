@@ -1,7 +1,6 @@
 module Parser where
 
 import Lexer
-import Debug.Trace
 import Data.Either
 import Control.Exception
 
@@ -9,32 +8,36 @@ parse :: [Token] -> Int
 parse tokens = fst (parseHead tokens)
 
 parseHead :: [Token] -> (Int, [Token])
-parseHead (tok:tokens) =
-    let op = head tokens in
-    case _type (head (tail tokens)) of
-        NUMBER ->
-            let firstNum = (read (literal (head (tail tokens))) :: Int) in
-            parseBody (tail (tail tokens)) (_type op) 0 firstNum
-        LPAREN ->
-            let result = parseHead (tail tokens) in
-            parseBody (snd result) (_type op) 0 (fst result)
+parseHead (tok:tokens) 
+    | _type tok /= LPAREN = error "`tok` should be LPAREN"
+    | otherwise =
+        let op = head tokens in
+        parseBodyFirstNum (tail tokens) (_type op)
+
+parseBodyFirstNum :: [Token] -> TokenType -> (Int, [Token])
+parseBodyFirstNum (tok:tokens) op 
+    | _type tok == LPAREN = 
+        let (result, rest) = parseHead (tok : tokens) in
+        parseBody rest op 0 result
+    | _type tok == NUMBER = parseBody tokens op 1 (read (literal tok) :: Int) 
+    | otherwise = error "unknown pattern"
 
 parseBody :: [Token] -> TokenType -> Int -> Int -> (Int, [Token])
 parseBody [] op iteration acc = (acc, [])
 parseBody (tok:tokens) op iteration acc =
     case _type tok of
+        LPAREN ->
+            let (val, rest) = parseHead (tok : tokens) in
+            case op of
+                PLUS -> parseBody rest op (iteration + 1) (acc + val)
+                MINUS -> parseBody rest op (iteration + 1) (acc - val)
+                TIMES -> parseBody rest op (iteration + 1) (acc * val)
         NUMBER ->
             let val = read (literal tok) :: Int in
             case op of
                 PLUS -> parseBody tokens op (iteration + 1) (acc + val)
                 MINUS -> parseBody tokens op (iteration + 1) (acc - val)
                 TIMES -> parseBody tokens op (iteration + 1) (acc * val)
-        LPAREN ->
-            let result = parseHead (tok : tokens) in
-            case op of
-                PLUS -> parseBody (snd result) op (iteration + 1) (acc + fst result)
-                MINUS -> parseBody (snd result) op (iteration + 1) (acc - fst result)
-                TIMES -> parseBody (snd result) op (iteration + 1) (acc * fst result)
         RPAREN ->
             let isNegation = iteration == 0 && op == MINUS in
             (if isNegation then -acc else acc, tokens)
