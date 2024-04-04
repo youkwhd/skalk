@@ -4,6 +4,10 @@ import Parser
 import Control.Monad (forM, when)
 import System.Environment (getArgs, getProgName)
 
+help :: String -> IO ()
+help progname = do
+    putStrLn $ "Usage: " ++ progname ++ " -e"
+
 main :: IO ()
 main = do
     args <- getArgs
@@ -13,7 +17,7 @@ main = do
     -- use getOpts
     case args of
         [] ->
-            putStrLn progname
+            help progname
         ["-e", expr] ->
             print (parse (tokenize expr)) 
         [file] ->
