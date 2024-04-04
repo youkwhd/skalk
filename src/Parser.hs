@@ -41,6 +41,6 @@ parseBody (tok:tokens) op iteration acc =
                 TIMES -> parseBody tokens op (iteration + 1) (acc * val)
                 DIVIDE -> parseBody tokens op (iteration + 1) (acc / val)
         RPAREN ->
-            let isNegation = iteration == 0 && op == MINUS in
+            let isNegation = iteration == 1 && op == MINUS in
             (if isNegation then -acc else acc, tokens)
         _ -> parseBody tokens op iteration acc
