@@ -4,6 +4,7 @@ import Parser
 import Control.Monad (forM, when)
 import System.Environment (getArgs, getProgName)
 import Text.Printf
+import Distribution.Compat.Prelude (exitFailure, exitSuccess)
 
 -- Check if double is a fixed number
 isFixed :: Double -> Bool
@@ -32,12 +33,16 @@ main = do
         [] -> do
             expr <- getContents
             interpretExprAndPrint expr
+        ["-h"] ->
+            printHelp progname
+        ["-e"] -> do
+            printHelp progname
+            exitFailure
         ["-e", expr] ->
             interpretExprAndPrint expr
-        ["-e"] ->
-            printHelp progname
         [filename] -> do
             expr <- readFile filename 
             interpretExprAndPrint expr
-        _ ->
+        _ -> do
             printHelp progname
+            exitFailure
