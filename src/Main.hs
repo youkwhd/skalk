@@ -11,7 +11,7 @@ isFixed x = x == fromIntegral (truncate x)
 
 printHelp :: String -> IO ()
 printHelp progname = do
-    putStrLn $ "Usage: " ++ progname ++ " -e"
+    putStrLn $ "Usage: " ++ progname ++ " [-e]"
 
 main :: IO ()
 main = do
