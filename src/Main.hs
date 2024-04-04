@@ -31,6 +31,8 @@ main = do
                 print (fromIntegral (truncate result))
             else
                 print result
+        ["-e"] ->
+            printHelp progname
         [file] ->
             -- TODO:
             -- read from file
