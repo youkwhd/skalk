@@ -33,8 +33,8 @@ main = do
         [] -> do
             expr <- getContents
             interpretExprAndPrint expr
-        ["-h"] ->
-            printHelp progname
+        ["-h"] -> printHelp progname
+        ["--help"] -> printHelp progname
         ["-e"] -> do
             printHelp progname
             exitFailure
