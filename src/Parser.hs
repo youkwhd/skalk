@@ -18,7 +18,7 @@ parseBodyFirstNum :: [Token] -> TokenType -> (Double, [Token])
 parseBodyFirstNum (tok:tokens) op 
     | _type tok == LPAREN = 
         let (result, rest) = parseHead (tok : tokens) in
-        parseBody rest op 0 result
+        parseBody rest op 2 result
     | _type tok == NUMBER = parseBody tokens op 1 (read (literal tok) :: Double)
     | otherwise = error "unknown pattern"
 
