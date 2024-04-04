@@ -1,0 +1,24 @@
+.TH SKALK 1 "April 2024" "0.0.1"
+
+.SH NAME
+skalk \- interpreted s-expression calculator
+
+.SH SYNOPSIS
+.B skalk
+[\fB-eh\fR]
+
+.SH OPTIONS
+.TP
+.BR \-e " " \fIexpr
+interprets the s-expression <expr>, prints the result to stdout.
+.TP
+.BR \-h " " \-\-help
+prints the help message.
+
+.SH DESCRIPTION
+S-expression calculator.
+
+.SH EXAMPLES
+.TP
+.B skalk -e \fR"(+ 34 35)"
+Calculate the result of (34 + 35) = 69 and outputs it onto the stdout.
