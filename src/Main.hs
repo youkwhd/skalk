@@ -9,6 +9,14 @@ import Text.Printf
 isFixed :: Double -> Bool
 isFixed x = x == fromIntegral (truncate x)
 
+interpretExprAndPrint :: String -> IO ()
+interpretExprAndPrint expr =
+    let result = parse (tokenize expr) in
+    if isFixed result then
+        print (fromIntegral (truncate result))
+    else
+        print result
+
 printHelp :: String -> IO ()
 printHelp progname = do
     putStrLn $ "Usage: " ++ progname ++ " [-e]"
@@ -21,21 +29,15 @@ main = do
     -- TODO:
     -- use getOpts
     case args of
-        [] ->
-            -- TODO:
-            -- read from stdin
-            printHelp progname
+        [] -> do
+            expr <- getContents
+            interpretExprAndPrint expr
         ["-e", expr] ->
-            let result = parse (tokenize expr) in
-            if isFixed result then
-                print (fromIntegral (truncate result))
-            else
-                print result
+            interpretExprAndPrint expr
         ["-e"] ->
             printHelp progname
-        [file] ->
-            -- TODO:
-            -- read from file
-            printHelp progname
+        [filename] -> do
+            expr <- readFile filename 
+            interpretExprAndPrint expr
         _ ->
             printHelp progname
