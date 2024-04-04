@@ -22,6 +22,8 @@ main = do
     -- use getOpts
     case args of
         [] ->
+            -- TODO:
+            -- read from stdin
             printHelp progname
         ["-e", expr] ->
             let result = parse (tokenize expr) in
